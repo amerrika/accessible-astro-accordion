@@ -1,0 +1,24 @@
+$ff-base: "Inter", sans-serif;
+$ff-accent: "";
+
+// Accordion button
+$accordion-button-background-color: white;
+$accordion-button-padding: 20px;
+
+// Accordion panel
+$accordion-panel-background-color: white;
+
+// Heading
+$accordion-heading-font-family: $ff-base;
+$accordion-heading-font-size: 20px;
+$accordion-heading-font-weight: 500;
+
+// Panel-inner & text
+$panel-inner-padding: 20px 10px;
+$panel-inner-font-family: $ff-base;
+$panel-inner-font-size: 16px;
+$panel-inner-font-weight: 300;
+
+// Border
+$accordion-border-width: 2px;
+$accordion-border-color: #9c9c9c;

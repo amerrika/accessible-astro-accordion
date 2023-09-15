@@ -1,0 +1,154 @@
+---
+import "../Sass/main.scss";
+const { title } = Astro.props;
+---
+
+<li class="accordion__item">
+  <h3 class="accordion__heading">
+    <button
+      type="button"
+      class="accordion__button"
+      aria-expanded="false"
+      aria-controls="accordion-panel-1"
+    >
+      {title}
+      <svg
+        class="button__toggle-indicator"
+        aria-hidden="true"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 448 512"
+      >
+        <path
+          fill="currentColor"
+          d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"
+        ></path>
+      </svg>
+    </button>
+  </h3>
+  <div
+    role="region"
+    class="accordion__panel"
+    aria-labelledby="accordion-button-1"
+  >
+    <div class="panel__inner">
+      <slot />
+    </div>
+  </div>
+</li>
+
+<script>
+  const accordionItems = [...document.querySelectorAll(".accordion__item")];
+  const accordionButtons = [...document.querySelectorAll(".accordion__button")];
+  const accordionPanels = [...document.querySelectorAll(".accordion__panel")];
+
+  const getPanelHeight = (accordionItem) => {
+    const accordionInner = accordionItem.querySelector(".panel__inner");
+    return accordionInner.getBoundingClientRect().height;
+  };
+
+  // returns true or false boolean for "aria-expanded" on accordionButton;
+  const isExpanded = (accordionButton) => {
+    const expanded = accordionButton.getAttribute("aria-expanded");
+    return expanded === "true" ? true : false;
+  };
+
+  // toggle aria-expanded on every accordion button when clicked
+  accordionButtons.forEach((accordionButton) => {
+    accordionButton.addEventListener("click", () => {
+      if (isExpanded(accordionButton)) {
+        accordionButton.setAttribute("aria-expanded", false);
+      } else {
+        accordionButton.setAttribute("aria-expanded", true);
+      }
+    });
+  });
+
+  // Main actions when accordion item is clicked
+  const toggleAccordionItem = (accordionItem) => {
+    const accordionButton = accordionItem.querySelector(".accordion__button");
+    const toggleIndicator = accordionItem.querySelector(
+      ".button__toggle-indicator"
+    );
+    const accordionPanel = accordionItem.querySelector(".accordion__panel");
+
+    // if button isExpanded = true;
+    if (isExpanded(accordionButton)) {
+      accordionPanel.style.height = `${getPanelHeight(accordionItem)}px`;
+      accordionPanel.setAttribute("data-opened", true);
+      toggleIndicator.innerHTML = `<svg class="header__toggle-indicator" aria-hidden="true" data-prefix="fas" data-icon="minus" class="svg-inline--fa fa-minus fa-w-14" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>`;
+    } else {
+      // if button isExpanded = false
+      accordionPanel.style.height = 0;
+      accordionPanel.removeAttribute("data-opened");
+      accordionButton.focus();
+      toggleIndicator.innerHTML = `<svg class="header__toggle-indicator" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg>`;
+    }
+  };
+
+  function recalculatePanelHeight() {
+    const openedAccordionPanels = accordionPanels.filter((element) =>
+      element.hasAttribute("data-opened")
+    );
+
+    openedAccordionPanels.forEach((openedAccordionPanel) => {
+      openedAccordionPanel.style.height = `${getPanelHeight(
+        openedAccordionPanel
+      )}px`;
+    });
+  }
+
+  // Setting attributes on each accordion item for accessibility
+  accordionItems.forEach((item, index) => {
+    const accordionButton = item.querySelector(".accordion__button");
+    const accordionPanel = item.querySelector(".accordion__panel");
+
+    accordionButton.setAttribute("id", `accordion-button-${index + 1}`);
+    accordionPanel.setAttribute("id", `item-${index + 1}`);
+
+    accordionButton.setAttribute("aria-controls", `item-${index + 1}`);
+    accordionPanel.setAttribute(
+      "aria-labelledby",
+      `accordion-button-${index + 1}`
+    );
+  });
+
+  // calling toggleAccordionItem on each accordion button
+  accordionItems.forEach((accordionItem) => {
+    accordionItem.addEventListener("click", () => {
+      toggleAccordionItem(accordionItem);
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (!event.target.closest(".accordion__button")) return;
+
+    const accordionWrapper = event.target.closest(".accordion__wrapper");
+    const accordionItem = event.target.closest(".accordion__item");
+    const accordionItems = [
+      ...accordionWrapper.querySelectorAll(".accordion__item"),
+    ];
+    const index = accordionItems.findIndex(
+      (element) => element === accordionItem
+    );
+
+    const { key } = event;
+
+    let targetItem;
+
+    if (key === "ArrowDown") {
+      targetItem = accordionItems[index + 1];
+    }
+
+    if (key === "ArrowUp") {
+      targetItem = accordionItems[index - 1];
+    }
+
+    if (targetItem) {
+      event.preventDefault();
+      targetItem.querySelector(".accordion__button").focus();
+    }
+  });
+
+  window.toggleAccordionItem = toggleAccordionItem;
+  window.onresize = recalculatePanelHeight;
+</script>

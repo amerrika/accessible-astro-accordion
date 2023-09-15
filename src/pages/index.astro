@@ -1,0 +1,46 @@
+---
+import Accordion from "../components/Accordion.astro";
+import AccordionItem from "../components/AccordionItem.astro";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <title>Astro Accordion</title>
+  </head>
+  <body>
+    <main>
+      <h1>Accordion Items</h1>
+      <Accordion>
+        <AccordionItem title="First Accordion Item">
+          <p>
+            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Autem
+            voluptatem quam odit vel, non tempore.
+          </p>
+        </AccordionItem>
+        <AccordionItem title="Second Accordion Item">
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deserunt,
+            dolor animi. Nesciunt, in nulla culpa ipsum commodi officiis ad
+            officia deleniti quasi laboriosam molestiae mollitia!
+          </p>
+        </AccordionItem>
+        <AccordionItem title="Third Accordion Item">
+          <p>
+            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Deserunt,
+            dolor animi. Nesciunt, in nulla culpa ipsum commodi officiis ad
+            officia deleniti quasi laboriosam molestiae mollitia! Lorem, ipsum
+            dolor sit amet consectetur adipisicing elit. Soluta, ipsum.
+          </p>
+        </AccordionItem>
+      </Accordion>
+    </main>
+  </body>
+</html>
